@@ -6,7 +6,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Matthew Norman",
-	"repository": "None",
+	"repository": "https://github.com/samusstrike/vscodeExtensionRequestIssue/tree/master",
 	"license": "ISC",
 	"publisher": "test",
 	"main": "./extension.js",
@@ -24,12 +24,12 @@
 	"contributes": {
 		"commands": [
 			{
-				"title": "vscodeExtTest: getUrl possible repro",
-				"command": "vscodeExtTest.getUrlTryRepro"
+				"title": "vscodeExtTest: test request possible repro",
+				"command": "vscodeExtTest.testRequestTryRepro"
 			},
 			{
-				"title": "vscodeExtTest: getUrl no repro",
-				"command": "vscodeExtTest.getUrlNoRepro"
+				"title": "vscodeExtTest: test request no repro",
+				"command": "vscodeExtTest.testRequestNoRepro"
 			}
 		]
 	}
