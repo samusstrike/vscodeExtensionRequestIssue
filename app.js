@@ -126,27 +126,36 @@ function addUrlToOptions(url, options) {
  * @param {boolean} tryRepro If true, the code with the erroneous behavior will be used, else the non-erroneous behavior code will be run.
  */
 async function testRequest(tryRepro) {
-	const { url, requestCount } = await getInput()
-	if (url === undefined) {
-		return
+	// const { url, requestCount } = await getInput()
+	// if (url === undefined) {
+	// 	return
+	// }
+
+	const requestCount = 200
+	const url = "https://mpclkmndev02.huronclick.com/irb/sd/PublicCustomLayouts/request"
+	const options = {
+		headers: {}
 	}
 
 	//Test case: Make a request. It seems multiple have to be made to trigger the issue.
-	try {
-		await vscode.window.showInformationMessage(`Repro test? ${tryRepro}, Making requests: count: ${requestCount}`)
-		for (var i = 0; i < requestCount; i++) {
-			if (tryRepro) {
-				await makeRequestTryRepro(url)
-			} else {
-				await makeRequestNoRepro(url)
-			}
+	vscode.window.showInformationMessage(`Repro test? ${tryRepro}, Making requests: count: ${requestCount}`)
+	const requests = []
+	for (var i = 0; i < requestCount; i++) {
+		if (tryRepro) {
+			requests.push(makeRequestTryRepro(url, options))
+		} else {
+			requests.push(makeRequestNoRepro(url, options))
 		}
-		await vscode.window.showInformationMessage(`Repro test? ${tryRepro}, Request succeeded: ${url}`)
-	} catch (e) {
-		console.error(e.message)
-		console.trace(`Repro test? ${tryRepro}`)
-		await vscode.window.showInformationMessage(`Error occurred: ${e.message}`)
 	}
+	Promise.all(requests)
+		.then(() => {
+			vscode.window.showInformationMessage(`Repro test? ${tryRepro}, Request succeeded: ${url}`)
+		})
+		.catch(e => {
+			console.error(e.message)
+			console.trace(`Repro test? ${tryRepro}`)
+			vscode.window.showErrorMessage(`Error occurred: ${e.message}`)
+		})
 
 	async function getInput() {
 		const url = await vscode.window.showInputBox({
@@ -154,7 +163,7 @@ async function testRequest(tryRepro) {
 			value: "https://www.google.com"
 		})
 		if (url === undefined) {
-			return
+			return {}
 		}
 		let requestCount
 		do {
@@ -163,12 +172,12 @@ async function testRequest(tryRepro) {
 				value: "10"
 			})
 			if (requestCount === undefined) {
-				return
+				return {}
 			}
-			if (isNaN(requestCount)) {
-				await vscode.window.showInformationMessage("Request count must be a number.")
+			if (isNaN(parseInt(requestCount))) {
+				vscode.window.showWarningMessage("Request count must be a number.")
 			}
-		} while (isNaN(requestCount))
+		} while (isNaN(parseInt(requestCount)))
 
 		return { url, requestCount }
 	}
@@ -177,5 +186,5 @@ async function testRequest(tryRepro) {
 
 
 module.exports = {
-	testRequest: testRequest
+	testRequest
 }
