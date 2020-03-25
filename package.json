@@ -1,0 +1,36 @@
+{
+	"name": "extrequesttest",
+	"version": "0.0.1",
+	"description": "Testing VSCode Extension",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Matthew Norman",
+	"repository": "None",
+	"license": "ISC",
+	"publisher": "test",
+	"main": "./extension.js",
+	"dependencies": {},
+	"devDependencies": {
+		"@types/node": "^12.8.1",
+		"@types/vscode": "^1.41.0"
+	},
+	"engines": {
+		"vscode": "^1.41.1"
+	},
+	"activationEvents": [
+		"*"
+	],
+	"contributes": {
+		"commands": [
+			{
+				"title": "vscodeExtTest: getUrl possible repro",
+				"command": "vscodeExtTest.getUrlTryRepro"
+			},
+			{
+				"title": "vscodeExtTest: getUrl no repro",
+				"command": "vscodeExtTest.getUrlNoRepro"
+			}
+		]
+	}
+}
