@@ -26,10 +26,6 @@
 			{
 				"title": "vscodeExtTest: test request possible repro",
 				"command": "vscodeExtTest.testRequestTryRepro"
-			},
-			{
-				"title": "vscodeExtTest: test request no repro",
-				"command": "vscodeExtTest.testRequestNoRepro"
 			}
 		]
 	}
