@@ -5,7 +5,6 @@ const vscodeExtTest = require('./app')
  * @param {vscode.ExtensionContext} context Context
  */
 async function activate(context) {
-	vscode.window.showInformationMessage("vscodeTestEx activated")
 	context.subscriptions.push(vscode.commands.registerCommand('vscodeExtTest.testRequestTryRepro', async () => { await vscodeExtTest.testRequest(true) }))
 	context.subscriptions.push(vscode.commands.registerCommand('vscodeExtTest.testRequestNoRepro', async () => { await vscodeExtTest.testRequest(false) }))
 }
