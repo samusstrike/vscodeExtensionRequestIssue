@@ -24,8 +24,12 @@
 	"contributes": {
 		"commands": [
 			{
-				"title": "vscodeExtTest: test request possible repro",
-				"command": "vscodeExtTest.testRequestTryRepro"
+				"title": "vscodeExtTest.testRequestWithIssue",
+				"command": "vscodeExtTest.testRequestWithIssue"
+			},
+			{
+				"title": "vscodeExtTest.testRequestWithoutIssue",
+				"command": "vscodeExtTest.testRequestWithoutIssue"
 			}
 		]
 	}

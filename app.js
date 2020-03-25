@@ -39,9 +39,27 @@ const constants = {
  * @param {RequestOptions} options https.request options.
  * @returns {Promise<RequestResult>} Resolves with the request and response object.
  */
-function makeRequest(url, options) {
+function makeRequest(url, options, testPassUrlInOptions) {
 	return new Promise((resolve, reject) => {
-		const req = https.request(url, options, (res) => {
+		let req
+		if (testPassUrlInOptions) {
+			//Does not reproduce the issue
+			options = addUrlToOptions(url, options)
+			req = https.request(options, handleRequest)
+		} else {
+			//Issue can occur with url as first parameter
+			req = https.request(url, options, handleRequest)
+		}
+
+		if (options.body) {
+			req.write(options.body)
+		}
+		req.on('error', (e) => {
+			reject(e)
+		})
+		req.end()
+
+		function handleRequest(res) {
 			const chunks = []
 			res.on('data', (chunk) => {
 				chunks.push(chunk)
@@ -62,27 +80,31 @@ function makeRequest(url, options) {
 					return
 				}
 
-				resolve({
-					req,
-					res
-				})
+				resolve(res)
 			})
-		})
-
-		if (options.body) {
-			req.write(options.body)
 		}
-		req.on('error', (e) => {
-			reject(e)
-		})
-		req.end()
 	})
+}
+
+/**
+ * @param {string} url https.request url
+ * @param {RequestOptions} [options] https.request options. If not provided a new object is created. If provided, the options object will be modified.
+ * @returns {RequestOptions} Options with URL parts added.
+ */
+function addUrlToOptions(url, options) {
+	options = Object.assign({}, options)
+	var parsedUrl = urlModule.parse(url)
+	options.protocol = parsedUrl.protocol
+	options.host = parsedUrl.host
+	options.path = parsedUrl.path
+
+	return options
 }
 
 /**
  * Execute a GET request to some URL. Prompt for a URL.
  */
-async function testRequest() {
+async function testRequest(testPassUrlInOptions) {
 	const url = "https://www.google.com"
 	const options = {
 		method: constants.methods.GET
@@ -90,7 +112,7 @@ async function testRequest() {
 
 	vscode.window.showInformationMessage(`Starting test`)
 	try {
-		await makeRequest(url, options)
+		await makeRequest(url, options, testPassUrlInOptions)
 		vscode.window.showInformationMessage(`Request succeeded: ${url}`)
 	} catch (e) {
 		console.error(e.message)
